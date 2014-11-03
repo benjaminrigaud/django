@@ -553,8 +553,9 @@ class SQLCompiler(object):
 
             extra_selects = []
             for extra_select, extra_params in self.query.extra_select.itervalues():
-                extra_selects.append(extra_select)
-                params.extend(extra_params)
+                if isinstance(extra_select, (list, tuple)) or hasattr(extra_select, 'as_sql'):
+                    extra_selects.append(extra_select)
+                    params.extend(extra_params)
             cols = (group_by + self.query.select +
                 self.query.related_select_cols + extra_selects)
             seen = set()
